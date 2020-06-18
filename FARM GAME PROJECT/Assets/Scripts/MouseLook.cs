@@ -16,6 +16,7 @@ public class MouseLook : MonoBehaviour
     #endregion
 
 
+
     private void Start()
     {
         // Hides and lock cursor to the center of the screen
