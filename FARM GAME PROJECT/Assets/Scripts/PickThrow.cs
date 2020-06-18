@@ -4,57 +4,75 @@ using UnityEngine;
 
 public class PickThrow : MonoBehaviour
 {
-    float throwForce = 600;
-    Vector3 objectPos;
-    float distance;
+    #region Variables
+    private float throwForce = 600;
+    // Distance that the player can interact with the object
+    private float distance;
+
+    private Vector3 objectPos;
+
+    private GameObject playerHand;
+    private GameObject player;
 
     public bool canHold = true;
-    public GameObject item;
-    private GameObject playerHand;
     public bool isHolding = false;
+    #endregion
+
+
 
     private void Start()
     {
         playerHand = GameObject.FindWithTag("PlayerHand");
+        player = GameObject.Find("MainCamera");
     }
 
-    // Update is called once per frame
     void Update()
     {
-        distance = Vector3.Distance(item.transform.position, playerHand.transform.position);
+        // Gets distance between interactable object and player hand
+        distance = Vector3.Distance(gameObject.transform.position, playerHand.transform.position);
+
+        // If interactable object is out of range
         if (distance >= 3f)
         {
             isHolding = false;
         }
-        // Check if is holding
+        
+        // If player is holding object
         if (isHolding == true)
         {
-            item.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            item.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            item.transform.SetParent(playerHand.transform);
+            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 
+            // Interactable object becomes child of player hand
+            gameObject.transform.SetParent(playerHand.transform);
+
+            // If right mouse button is pressed
             if (Input.GetMouseButtonDown(1))
             {
-                item.GetComponent<Rigidbody>().AddForce(playerHand.transform.forward * throwForce);
+                // Interactable object is thrown
+                gameObject.GetComponent<Rigidbody>().AddForce(playerHand.transform.forward * throwForce);
                 isHolding = false;
             }
         }
+        // If player is not holding object
         else
         {
-            objectPos = item.transform.position;
-            item.transform.SetParent(null);
-            item.GetComponent<Rigidbody>().useGravity = true;
-            item.transform.position = objectPos;
+            objectPos = gameObject.transform.position;
+            gameObject.transform.SetParent(null);
+            gameObject.GetComponent<Rigidbody>().useGravity = true;
+            gameObject.transform.position = objectPos;
         }
     }
 
     void OnMouseDown()
     {
+        // If interactable object is within range
         if (distance <= 3f)
         {
             isHolding = true;
-            item.GetComponent<Rigidbody>().useGravity = false;
-            item.GetComponent<Rigidbody>().detectCollisions = true;
+            gameObject.GetComponent<Rigidbody>().useGravity = false;
+            gameObject.GetComponent<Rigidbody>().detectCollisions = true;
+            gameObject.GetComponent<Transform>().LookAt(player.GetComponent<Transform>());
         }
     }
     void OnMouseUp()

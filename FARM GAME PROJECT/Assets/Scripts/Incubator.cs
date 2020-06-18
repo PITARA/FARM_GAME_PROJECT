@@ -74,7 +74,6 @@ public class Incubator : MonoBehaviour
 
             // Aesthetic only seed prefab spawns inside incubator
             seedInstance = Instantiate(seedPrefab, transform.position, transform.rotation);
-            Debug.Log("Semente entrou na incubadora");
         }
 
         // If gameobject is not a seed
