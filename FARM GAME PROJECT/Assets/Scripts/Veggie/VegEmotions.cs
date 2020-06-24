@@ -57,16 +57,6 @@ public class VegEmotions : MonoBehaviour
                 winkAnimationTimer = winkAnimationTime;
             }
         }
-
-        if (isHolding)
-        {
-            if (Input.GetMouseButtonDown(1))
-            {
-                Debug.Log("CLICOU BOTÃO DIREITO");
-                PlaySound(RandVeggieThrownClip());
-            }
-        }
-
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -135,5 +125,16 @@ public class VegEmotions : MonoBehaviour
         }
 
         return randClip;
+    }
+
+    private void OnMouseOver()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (isHolding)
+            {
+                PlaySound(RandVeggieThrownClip());
+            }
+        }
     }
 }
