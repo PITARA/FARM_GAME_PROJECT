@@ -39,6 +39,12 @@ public class OutlineHighlight : MonoBehaviour
         distance = Vector3.Distance(gameObject.transform.position, playerHand.transform.position);
         // Gets info if player is holding interactable object or not
         isHolding = gameObject.GetComponent<PickThrow>().isHolding;
+
+        if (distance > 3)
+        {
+            // Object is not highlighted
+            rend.material.SetFloat("_OutlineWidth", defaultOutline);
+        }
     }
 
     private void OnMouseOver()
