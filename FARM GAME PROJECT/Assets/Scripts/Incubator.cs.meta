@@ -3,7 +3,11 @@ guid: 6f8be60f01dbae64a9dcc5cc02e1b37f
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - seedPrefab: {instanceID: 0}
+  - vegPrefab: {instanceID: 0}
+  - vegSpawnPoint: {instanceID: 0}
+  - progressBar: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
