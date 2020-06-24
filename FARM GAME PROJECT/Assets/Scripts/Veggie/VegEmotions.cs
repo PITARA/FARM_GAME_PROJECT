@@ -33,6 +33,7 @@ public class VegEmotions : MonoBehaviour
     private void Update()
     {
         isHolding = gameObject.GetComponent<PickThrow>().isHolding;
+        Debug.Log("Is holding: " + isHolding);
 
         if (isHolding)
         {
@@ -57,11 +58,11 @@ public class VegEmotions : MonoBehaviour
             }
         }
 
-        // If right mouse button is pressed
         if (isHolding)
         {
             if (Input.GetMouseButtonDown(1))
             {
+                Debug.Log("CLICOU BOTÃO DIREITO");
                 PlaySound(RandVeggieThrownClip());
             }
         }
@@ -109,17 +110,6 @@ public class VegEmotions : MonoBehaviour
                 veggieThrown_AudioSource.Play();
                 break;
         }
-
-        /*if (clip == veggieHittingFloor_Clip)
-        {
-            veggieHittingFloor_AudioSource.clip = clip;
-            veggieHittingFloor_AudioSource.Play();
-        }
-        else
-        {
-            veggieThrown_AudioSource.clip = clip;
-            veggieThrown_AudioSource.Play();
-        }*/
     }
 
     private AudioClip RandVeggieThrownClip()
