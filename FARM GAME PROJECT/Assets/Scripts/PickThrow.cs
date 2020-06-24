@@ -79,4 +79,9 @@ public class PickThrow : MonoBehaviour
     {
         isHolding = false;
     }
+
+    public float Distance
+    {
+        get { return distance; }
+    }
 }
