@@ -5,8 +5,7 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - seedPrefab: {instanceID: 0}
-  - vegPrefab: {fileID: 6101209551941389561, guid: 3f4cde2a644cd604593495e7b8a7419c,
-      type: 3}
+  - vegPrefab: {instanceID: 0}
   - vegSpawnPoint: {instanceID: 0}
   - progressBar: {instanceID: 0}
   executionOrder: 0
