@@ -67,13 +67,20 @@ public class Incubator : MonoBehaviour
         // If gameobject is a seed
         if (collision.gameObject.tag == "Seed")
         {
-            // Seed gameobject gets destroyed
-            Destroy(collision.gameObject);
+            if (isFull)
+            {
+                Debug.Log("Incubator is in use");
+            }
+            else
+            {
+                // Seed gameobject gets destroyed
+                Destroy(collision.gameObject);
 
-            isFull = true;
+                isFull = true;
 
-            // Aesthetic only seed prefab spawns inside incubator
-            seedInstance = Instantiate(seedPrefab, transform.position, transform.rotation);
+                // Aesthetic only seed prefab spawns inside incubator
+                seedInstance = Instantiate(seedPrefab, transform.position, transform.rotation);
+            }
         }
 
         // If gameobject is not a seed
