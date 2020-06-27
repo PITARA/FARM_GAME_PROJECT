@@ -6,34 +6,41 @@ using UnityEngine.UI;
 public class VegEmotions : MonoBehaviour
 {
     #region Variables
-    public Sprite[] emotion = new Sprite[5];
+    [SerializeField]
+    private Sprite[] emotion = new Sprite[7]; // [0 = Normal], [1 = Normal_Wink], [2 = Hold], [3 = Hungry], [4 = Panic], [5 = Hungry_PickedUp], [6 = GettingFed]
 
     public Image face;
 
     private bool isHolding;
     private bool doWink = false;
+    private bool gettingFedEmotion = false;
 
-    private float winkAnimationTime = 0.5f;
+    private float animationTime = 0.5f;
     private float winkAnimationTimer;
+
+    private float gettingFedAnimationTimer;
 
     public AudioSource veggieHittingFloor_AudioSource;
     public AudioSource veggieThrown_AudioSource;
+    public AudioSource veggieGettingFed_AudioSource;
 
     public AudioClip veggieHittingFloor_Clip;
     public AudioClip[] veggieThrown_Clip = new AudioClip[3];
+    [SerializeField]
+    private AudioClip[] veggieGettingFed_Clip = new AudioClip[2];
 
     #endregion
 
 
     private void Start()
     {
-        winkAnimationTimer = winkAnimationTime;
+        winkAnimationTimer = animationTime;
+        gettingFedAnimationTimer = animationTime;
     }
 
     private void Update()
     {
         isHolding = gameObject.GetComponent<PickThrow>().isHolding;
-        Debug.Log("Is holding: " + isHolding);
 
         if (isHolding)
         {
@@ -41,20 +48,39 @@ public class VegEmotions : MonoBehaviour
         }
         else
         {
-            if (!doWink)
+            if (!doWink && !gettingFedEmotion)
             {
                 NormalEmotion();
             }
         }
 
-        // 
+        // Stays for 0.5 seconds on wink face
         if (doWink)
         {
             winkAnimationTimer -= Time.deltaTime;
             if (winkAnimationTimer <= 0)
             {
                 doWink = false;
-                winkAnimationTimer = winkAnimationTime;
+                winkAnimationTimer = animationTime;
+            }
+        }
+
+        // Stays for 0.5 seconds on fed face
+        if (gettingFedEmotion)
+        {
+            gettingFedAnimationTimer -= Time.deltaTime;
+            if (gettingFedAnimationTimer <= 0)
+            {
+                gettingFedEmotion = false;
+                gettingFedAnimationTimer = animationTime;
+            }
+        }
+
+        if (gameObject.GetComponent<VegQuality>().CanFeed)
+        {
+            if (!isHolding)
+            {
+                HungryEmotion();
             }
         }
     }
@@ -71,9 +97,19 @@ public class VegEmotions : MonoBehaviour
 
     private void GettingHeldEmotion()
     {
-        if (face.sprite != emotion[2])
+        if (gameObject.GetComponent<VegQuality>().CanFeed)
         {
-            face.sprite = emotion[2];
+            if (face.sprite != emotion[5])
+            {
+                face.sprite = emotion[5];
+            }
+        }
+        else
+        {
+            if (face.sprite != emotion[2])
+            {
+                face.sprite = emotion[2];
+            }
         }
     }
 
@@ -85,7 +121,25 @@ public class VegEmotions : MonoBehaviour
         }
     }
 
-    private void PlaySound(AudioClip clip)
+    private void HungryEmotion()
+    {
+        if (face.sprite != emotion[3])
+        {
+            face.sprite = emotion[3];
+        }
+    }
+
+    public void GettingFedEmotion()
+    {
+        if (face.sprite != emotion[6])
+        {
+            face.sprite = emotion[6];
+            gettingFedEmotion = true;
+            PlaySound(RandVeggieFedClip());
+        }
+    }
+
+    public void PlaySound(AudioClip clip)
     {
         AudioClip chosenAudioClip = clip;
 
@@ -94,6 +148,11 @@ public class VegEmotions : MonoBehaviour
             case "veggieHittingFloor_SFX":
                 veggieHittingFloor_AudioSource.clip = clip;
                 veggieHittingFloor_AudioSource.Play();
+                break;
+            case "veggieGettingFed01_SFX":
+            case "veggieGettingFed02_SFX":
+                veggieGettingFed_AudioSource.clip = clip;
+                veggieGettingFed_AudioSource.Play();
                 break;
             default:
                 veggieThrown_AudioSource.clip = clip;
@@ -127,13 +186,38 @@ public class VegEmotions : MonoBehaviour
         return randClip;
     }
 
+    public AudioClip RandVeggieFedClip()
+    {
+        AudioClip randFedClip = null;
+
+        int randomRange = Random.Range(1, 3);
+
+        switch (randomRange)
+        {
+            case 1:
+                randFedClip = veggieGettingFed_Clip[0];
+                break;
+            case 2:
+                randFedClip = veggieGettingFed_Clip[1];
+                break;
+            default:
+                Debug.LogError("That veggie being thrown sound does not exist.");
+                break;
+        }
+
+        return randFedClip;
+    }
+
     private void OnMouseOver()
     {
         if (Input.GetMouseButtonDown(1))
         {
             if (isHolding)
             {
-                PlaySound(RandVeggieThrownClip());
+                if (!gameObject.GetComponent<VegQuality>().CanFeed)
+                {
+                    PlaySound(RandVeggieThrownClip());
+                }
             }
         }
     }
