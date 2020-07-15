@@ -7,7 +7,7 @@ public class PickThrow : MonoBehaviour
     #region Variables
     private float throwForce = 600;
     // Distance that the player can interact with the object
-    private float distance;
+    public float distance { get; private set; }
 
     private Vector3 objectPos;
 

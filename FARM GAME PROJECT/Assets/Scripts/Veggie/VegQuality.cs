@@ -17,11 +17,12 @@ public class VegQuality : MonoBehaviour
     private float decayingCooldown = 10;
     private float decayingTime = 0;
 
-    private bool isDecaying = false;
+    private bool isDecaying;
+    public bool isStarving { get; private set; }
 
-    private bool canFeed = false;
+    public bool canFeed { get; private set; }
 
-    private Quality vegQuality;
+    public Quality vegQuality { get; private set; }
 
     private Dew dew = new Dew();
 
@@ -29,18 +30,22 @@ public class VegQuality : MonoBehaviour
 
 
 
-    enum Quality
+    public enum Quality
     {
-        Decaying, // Less than 0
-        Normal, // 0
-        Good, // 25
-        Great, // 50
-        Excellent, // 75
-        Pristine // 100
+        DECAYING, // Less than 0
+        NORMAL, // 0
+        GOOD, // 25
+        GREAT, // 50
+        EXCELLENT, // 75
+        PRISTINE // 100
     }
 
     private void Start()
     {
+        isDecaying = false;
+        canFeed = false;
+        isStarving = false;
+
         vegActualQuality = vegDefaultQuality;
         feedingTime = Time.time + feedingCooldown;
     }
@@ -88,38 +93,32 @@ public class VegQuality : MonoBehaviour
     {
         if (vegActualQuality < 0)
         {
-            vegQuality = Quality.Decaying;
-            Debug.Log("A");
+            vegQuality = Quality.DECAYING;
         }
 
         if (vegActualQuality >= 0 && vegActualQuality <= 24)
         {
-            vegQuality = Quality.Normal;
-            Debug.Log("B");
+            vegQuality = Quality.NORMAL;
         }
 
         if (vegActualQuality >= 25 && vegActualQuality <= 49)
         {
-            vegQuality = Quality.Good;
-            Debug.Log("C");
+            vegQuality = Quality.GOOD;
         }
 
         if (vegActualQuality >= 50 && vegActualQuality <= 74)
         {
-            vegQuality = Quality.Great;
-            Debug.Log("D");
+            vegQuality = Quality.GREAT;
         }
 
         if (vegActualQuality >= 75 && vegActualQuality <= 99)
         {
-            vegQuality = Quality.Excellent;
-            Debug.Log("E");
+            vegQuality = Quality.EXCELLENT;
         }
 
         if (vegActualQuality >= 100)
         {
-            vegQuality = Quality.Pristine;
-            Debug.Log("F");
+            vegQuality = Quality.PRISTINE;
         }
     }
 
@@ -151,6 +150,8 @@ public class VegQuality : MonoBehaviour
             // Disables decay
             isDecaying = false;
 
+            isStarving = false;
+
             // Makes eating face
             gameObject.GetComponent<VegEmotions>().GettingFedEmotion();
         }
@@ -170,6 +171,8 @@ public class VegQuality : MonoBehaviour
             vegActualQuality -= dew.DewFeedValue;
             // Decaying enters cooldown before quality goes down again
             decayingTime = Time.time + decayingCooldown;
+
+            isStarving = true;
         }
 
         // Fist time veggie gets hungry it gets a decaying tag without losing quality, but if loop completes and veggie is still hungry, veggie starts losing quality
